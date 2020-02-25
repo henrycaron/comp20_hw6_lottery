@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>HW6</title>
+	
+	<script language="javascript">
+		var lottery = {
+			nums : [],
+			lucky : -1,
+			get_vals : function(){
+				this.nums = [];
+				while(this.nums.length < 5){
+					var x = Math.round(Math.random() * 48);
+					if (!this.nums.includes(x))
+						this.nums.push(x);
+				}
+				do{
+					this.lucky = Math.round(Math.random() * 18);
+				}while(this.nums.includes(this.lucky));
+				this.nums.sort((a, b) => a - b);
+				document.getElementById("lucky_ball").innerHTML = this.lucky;
+				sorted = [];
+				for(i = 0; i < 5; i++){
+					sorted[i] = this.nums[i]
+				}
+				
+
+				document.getElementById("sorted").innerHTML = this.nums;
+			},
+			stringtoint : function(guesses){
+				var res = guesses.split(" ");
+				for (var i=0; i<res.length; i++)
+				{
+					res[i] = parseInt(res[i], 10);
+				}
+				return res;
+			},
+			islucky : function(){
+				var lucky_guess = document.form1.lucky.value;
+
+				if (lucky_guess == this.lucky){
+					console.log("lucky_guess is true");
+					return true;
+				}
+				else{
+					console.log("lucky_guess is false");
+					return false;
+				}
+			},
+			check_nums : function(guesses){
+				checker = [];
+				for(i = 0; i < 5; i++){
+					checker[i] = this.nums[i]
+				}
+				console.log("checker is: " + checker);
+				console.log("guesses are: " + guesses);
+				var total = 0;
+				var num_checks = guesses.length > 5 ? 5 : guesses.length;
+				if (guesses.length > 5)
+					document.getElementById("too_many").innerHTML = "Too many guesses! only accepting first five! <br/>";
+				else
+					document.getElementById("too_many").innerHTML = "";
+				for(var i = 0; i < num_checks; i++){
+					if (checker.includes(guesses[i])){
+						total++;
+						const index = checker.indexOf(guesses[i]);
+						if (index > -1) {
+						  checker.splice(index, 1);
+						}
+					}
+				}
+				console.log("total is: " + total);
+
+				return total;
+				
+				
+				return total;
+			},
+			print_winnings : function(islucky, total){
+				output = "";
+				if(islucky){
+					if(total == 0)
+						output += "$4";
+					else if(total == 1)
+						output += "$6";
+					else if(total == 2)
+						output += "$25";
+					else if(total == 3)
+						output += "$150";
+					else if(total == 4)
+						output += "$5,000";
+					else if(total == 5)
+						output += "$7,000 a WEEK for LIFE!";
+				}
+				else{
+					if(total == 0)
+						output += "$0";
+					else if(total == 1)
+						output += "$0";
+					else if(total == 2)
+						output += "$3";
+					else if(total == 3)
+						output += "$20";
+					else if(total == 4)
+						output += "$200";
+					else if(total == 5)
+						output += "$25,000 a WEEK for LIFE!";
+				}
+				console.log("output: " + output);
+				document.getElementById("output").innerHTML = output;
+
+			},
+			winnings : function (){
+				var islucky = this.islucky();
+				var total = this.check_nums(this.stringtoint(document.form1.guesses.value));
+				this.print_winnings(islucky, total);
+			}
+		}
+	</script>
+	
+</head>
+
+<body onload="lottery.get_vals()">
+
+  	<h5>Winning balls are: <span id="sorted"></span></h5>
+
+  	<h5>Lucky ball is: <span id="lucky_ball"></span></h5>
+	
+	
+	<form name="form1">
+		<input type = "button" value = "Reshuffle Balls?" 
+			   onclick = "lottery.get_vals()"> <br/> <br/>
+		Guess 5 balls&nbsp; &nbsp;
+			<input type="text" name="guesses" id="guesses" /><br />
+		Guess the lucky ball &nbsp;&nbsp;
+			<input type="lucky" name="lucky" id="lucky" /><br /><br/>
+		<input type="button" value = "Check Your Winnings!" 
+			   onclick ="lottery.winnings()">
+		<hr />
+		<span id = "too_many"></span>
+		Your Winnings: <span id="output"></span>
+		
+		<br /><br />
+	 
+</form>
+</body>
+	
+
+</html>
